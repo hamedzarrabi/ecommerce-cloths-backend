@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long userId) {
+    public void deleteUserById(Long userId) {
         userRepository.deleteById(userId);
     }
 
@@ -64,5 +64,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).get();
+    }
+
+    @Override
+    public List<User> findByName(String name) {
+        return userRepository.findByName(name);
     }
 }

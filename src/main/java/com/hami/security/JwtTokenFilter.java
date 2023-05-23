@@ -17,68 +17,81 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
+
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
         if (!hasAuthorizationHeader(request)) {
             filterChain.doFilter(request, response);
             return;
         }
+
         String accessToken = getAccessToken(request);
+        System.out.println("Access Token: " + accessToken);
 
         if (!jwtTokenUtil.validateAccessToken(accessToken)) {
             filterChain.doFilter(request, response);
             return;
         }
 
+
         setAuthenticationContext(accessToken, request);
         filterChain.doFilter(request, response);
+
     }
 
     private void setAuthenticationContext(String accessToken, HttpServletRequest request) {
+
         UserDetails userDetails = getUserDetails(accessToken);
 
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        UsernamePasswordAuthenticationToken authentication
+                = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-        authenticationToken.setDetails(
-                new WebAuthenticationDetailsSource().buildDetails(request)
-        );
+        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     private UserDetails getUserDetails(String accessToken) {
-        User userDetails = new User();
+
+        User userDetail = new User();
+
         Claims claims = jwtTokenUtil.parseClaims(accessToken);
 
-        String claimsRoles = (String) claims.get("roles");
 
-        System.out.println("ClaimsRoles: " + claimsRoles);
+        String claimRoles = (String) claims.get("roles");
 
-        claimsRoles = claimsRoles.replace("[", "").replace("]", "");
-        String[] roleNames = claimsRoles.split(",");
+        System.out.println("claimsRole: " + claimRoles);
 
-        for (String roleName : roleNames) {
-            userDetails.addRole(new Role(roleName));
+        claimRoles = claimRoles.replace("[", "").replace("]", "");
+
+        String[] roleNames = claimRoles.split(",");
+
+        for (String aRoleName : roleNames) {
+            userDetail.addRole(new Role(aRoleName));
         }
 
         String subject = (String) claims.get(Claims.SUBJECT);
-        String[] subjectArray = subject.split(",");
 
-        userDetails.setId(Long.parseLong(subjectArray[0]));
-        userDetails.setEmail(subjectArray[1]);
-        return userDetails;
+        String[] subjectArray = jwtTokenUtil.getSubject(accessToken).split(",");
+
+        userDetail.setId(Long.parseLong(subjectArray[0]));
+        userDetail.setEmail(subjectArray[1]);
+
+        return userDetail;
     }
 
     private boolean hasAuthorizationHeader(HttpServletRequest request) {
+
         String header = request.getHeader("Authorization");
+        System.out.println("Authorization header: " + header);
+
         if (ObjectUtils.isEmpty(header) || !header.startsWith("Bearer")) {
             return false;
         }
@@ -89,8 +102,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private String getAccessToken(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
         String token = header.split(" ")[1].trim();
-        System.out.println("Access token: " + token);
-
+        System.out.println("Access Token: " + token);
         return token;
     }
 }
