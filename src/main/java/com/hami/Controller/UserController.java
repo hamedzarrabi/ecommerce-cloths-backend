@@ -1,7 +1,10 @@
 package com.hami.Controller;
 
 import com.hami.Entity.User;
+
+import com.hami.Exception.EmailExistsException;
 import com.hami.Repository.UserRepository;
+import com.hami.Service.UserService;
 import com.hami.security.AuthRequest;
 import com.hami.security.AuthResponse;
 import com.hami.security.JwtTokenUtil;
@@ -12,11 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -28,10 +27,8 @@ public class UserController {
     private AuthenticationManager authenticationManager;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    @Autowired private UserService userService;
+
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid AuthRequest request) {
@@ -41,7 +38,7 @@ public class UserController {
             );
             User user = (User) authenticate.getPrincipal();
             String accessToken = jwtTokenUtil.generateAccessToken(user);
-            AuthResponse response = new AuthResponse(user.getEmail(), accessToken);
+            AuthResponse response = new AuthResponse(user.getEmail(), accessToken, user.getRoles().toString().replace("[", "").replace("]", ""));
 
             return ResponseEntity.ok(response);
 
@@ -50,12 +47,12 @@ public class UserController {
         }
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<User> addUser(@RequestBody User user) {
+    @PostMapping("/register")
+    public ResponseEntity<?> register(
+            @RequestBody @Valid User user) throws EmailExistsException {
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        User newUser = userRepository.save(user);
 
+        User newUser = userService.register(user.getName(), user.getEmail(), user.getPhoneNumber(), user.getPassword());
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 }

@@ -1,6 +1,8 @@
 package com.hami.security;
 
+import com.hami.Entity.Role;
 import com.hami.Entity.User;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,7 +45,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         UserDetails userDetails = getUserDetails(accessToken);
 
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(userDetails, null, null);
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
         authenticationToken.setDetails(
                 new WebAuthenticationDetailsSource().buildDetails(request)
@@ -54,7 +56,21 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private UserDetails getUserDetails(String accessToken) {
         User userDetails = new User();
-        String[] subjectArray = jwtTokenUtil.getSubject(accessToken).split(",");
+        Claims claims = jwtTokenUtil.parseClaims(accessToken);
+
+        String claimsRoles = (String) claims.get("roles");
+
+        System.out.println("ClaimsRoles: " + claimsRoles);
+
+        claimsRoles = claimsRoles.replace("[", "").replace("]", "");
+        String[] roleNames = claimsRoles.split(",");
+
+        for (String roleName : roleNames) {
+            userDetails.addRole(new Role(roleName));
+        }
+
+        String subject = (String) claims.get(Claims.SUBJECT);
+        String[] subjectArray = subject.split(",");
 
         userDetails.setId(Long.parseLong(subjectArray[0]));
         userDetails.setEmail(subjectArray[1]);
@@ -63,11 +79,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private boolean hasAuthorizationHeader(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
-        System.out.println("Authorization Header: " + header);
-
         if (ObjectUtils.isEmpty(header) || !header.startsWith("Bearer")) {
             return false;
         }
+
         return true;
     }
 
