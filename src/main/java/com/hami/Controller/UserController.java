@@ -17,12 +17,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/user")
+@EnableWebMvc
 public class UserController {
 
     @Autowired
