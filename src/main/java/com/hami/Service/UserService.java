@@ -1,6 +1,6 @@
 package com.hami.Service;
 
-import com.hami.Entity.User;
+import com.hami.Entity.user.User;
 import com.hami.Exception.EmailExistsException;
 
 

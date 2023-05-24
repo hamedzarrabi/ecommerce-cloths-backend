@@ -1,6 +1,6 @@
 package com.hami.Repository;
 
-import com.hami.Entity.Role;
+import com.hami.Entity.user.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

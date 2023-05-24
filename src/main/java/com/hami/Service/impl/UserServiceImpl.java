@@ -1,7 +1,7 @@
 package com.hami.Service.impl;
 
-import com.hami.Entity.Role;
-import com.hami.Entity.User;
+import com.hami.Entity.user.Role;
+import com.hami.Entity.user.User;
 import com.hami.Exception.EmailExistsException;
 import com.hami.Repository.RoleRepository;
 import com.hami.Repository.UserRepository;

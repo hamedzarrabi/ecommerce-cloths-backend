@@ -1,7 +1,7 @@
 package com.hami.security;
 
 
-import com.hami.Entity.User;
+import com.hami.Entity.user.User;
 import io.jsonwebtoken.*;
 
 import org.slf4j.Logger;

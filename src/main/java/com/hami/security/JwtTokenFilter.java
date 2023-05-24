@@ -1,7 +1,7 @@
 package com.hami.security;
 
-import com.hami.Entity.Role;
-import com.hami.Entity.User;
+import com.hami.Entity.user.Role;
+import com.hami.Entity.user.User;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

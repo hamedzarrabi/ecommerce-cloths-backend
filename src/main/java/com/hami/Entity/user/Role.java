@@ -1,4 +1,4 @@
-package com.hami.Entity;
+package com.hami.Entity.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,6 +1,7 @@
 package com.hami.Controller;
 
-import com.hami.Entity.User;
+import com.hami.DTO.RegisterDto;
+import com.hami.Entity.user.User;
 
 import com.hami.Exception.EmailExistsException;
 import com.hami.Service.UserService;
@@ -33,9 +34,9 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(
-            @RequestBody @Valid User user) throws EmailExistsException {
+            @RequestBody @Valid RegisterDto registerDto) throws EmailExistsException {
 
-        User newUser = userService.register(user.getName(), user.getEmail(), user.getPhoneNumber(), user.getPassword());
+        User newUser = userService.register(registerDto.getName(), registerDto.getEmail(), registerDto.getPhoneNumber(), registerDto.getPassword());
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
