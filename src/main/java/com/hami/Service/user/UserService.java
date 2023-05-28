@@ -1,9 +1,11 @@
-package com.hami.Service;
+package com.hami.Service.user;
 
 import com.hami.Entity.user.User;
 import com.hami.Exception.EmailExistsException;
 
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface UserService {
@@ -13,4 +15,5 @@ public interface UserService {
     public User findUserById(Long userId);
     public User findByEmail(String email);
     public List<User> findByName(String name);
+    public void logOut(HttpServletRequest request, HttpServletResponse response);
 }

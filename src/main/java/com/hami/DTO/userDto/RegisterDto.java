@@ -1,4 +1,4 @@
-package com.hami.DTO;
+package com.hami.DTO.userDto;
 
 import lombok.Data;
 

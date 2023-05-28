@@ -1,10 +1,10 @@
-package com.hami.Controller;
+package com.hami.Controller.userController;
 
-import com.hami.DTO.RegisterDto;
+import com.hami.DTO.userDto.RegisterDto;
 import com.hami.Entity.user.User;
 
 import com.hami.Exception.EmailExistsException;
-import com.hami.Service.UserService;
+import com.hami.Service.user.UserService;
 import com.hami.security.AuthRequest;
 import com.hami.security.AuthResponse;
 import com.hami.security.JwtTokenUtil;
@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -51,13 +53,20 @@ public class UserController {
             );
             User user = (User) authenticate.getPrincipal();
             String accessToken = jwtTokenUtil.generateAccessToken(user);
-            AuthResponse response = new AuthResponse(user.getEmail(), accessToken, user.getRoles().toString().replace("[", "").replace("]", ""));
+            AuthResponse response = new AuthResponse(user.getId(), user.getEmail(), accessToken, user.getRoles().toString().replace("[", "").replace("]", ""), user.getName(), user.getPhoneNumber());
 
             return ResponseEntity.ok(response);
 
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<String> logOut(HttpServletRequest request, HttpServletResponse response) {
+        userService.logOut(request, response);
+
+        return ResponseEntity.ok("Logged out successfully");
     }
 
     @GetMapping("/findAll")

@@ -50,18 +50,18 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
+        http.cors().and().csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.exceptionHandling().authenticationEntryPoint(
                 ((request, response, authException) -> {
-                  response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                          authException.getMessage());
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                            authException.getMessage());
                 })
         );
 
         http.authorizeRequests()
-                .antMatchers("/user/**").permitAll()
+                .antMatchers("/user/login").permitAll()
                 .antMatchers("/v2/api-docs/**").permitAll()
                 .antMatchers("/swagger-ui/**").permitAll()
                 .antMatchers("/swagger-resources/**").permitAll()

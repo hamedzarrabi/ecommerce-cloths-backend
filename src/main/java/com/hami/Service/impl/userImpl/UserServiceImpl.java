@@ -1,15 +1,20 @@
-package com.hami.Service.impl;
+package com.hami.Service.impl.userImpl;
 
 import com.hami.Entity.user.Role;
 import com.hami.Entity.user.User;
 import com.hami.Exception.EmailExistsException;
 import com.hami.Repository.RoleRepository;
 import com.hami.Repository.UserRepository;
-import com.hami.Service.UserService;
+import com.hami.Service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Service
@@ -69,5 +74,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findByName(String name) {
         return userRepository.findByName(name);
+    }
+
+    @Override
+    public void logOut(HttpServletRequest request, HttpServletResponse response) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            new SecurityContextLogoutHandler().logout(request, response, authentication);
+        }
+
     }
 }
