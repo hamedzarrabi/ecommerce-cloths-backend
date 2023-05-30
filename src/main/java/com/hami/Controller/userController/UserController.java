@@ -8,6 +8,8 @@ import com.hami.Service.user.UserService;
 import com.hami.security.AuthRequest;
 import com.hami.security.AuthResponse;
 import com.hami.security.JwtTokenUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 
+@Api(value = "CRUD REST APIs for user Resource")
 @RestController
 @RequestMapping("/user")
 @EnableWebMvc
@@ -36,6 +39,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @ApiOperation(value = "Register user for")
     @PostMapping("/register")
     public ResponseEntity<?> register(
             @RequestBody @Valid RegisterDto registerDto) throws EmailExistsException {
@@ -44,7 +48,7 @@ public class UserController {
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
-
+    @ApiOperation(value = "Login user")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid AuthRequest request) {
         try {
@@ -62,6 +66,7 @@ public class UserController {
         }
     }
 
+    @ApiOperation(value = "Logout user")
     @GetMapping("/logout")
     public ResponseEntity<String> logOut(HttpServletRequest request, HttpServletResponse response) {
         userService.logOut(request, response);
@@ -69,36 +74,40 @@ public class UserController {
         return ResponseEntity.ok("Logged out successfully");
     }
 
+    @ApiOperation(value = "Find all users in database registered")
     @GetMapping("/findAll")
     public ResponseEntity<List<User>> allUsers() {
         List<User> user = userService.findAllUsers();
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Find by email user")
     @GetMapping("/findByEmail/{email}")
     public ResponseEntity<User> findUserByEmail(@PathVariable(name = "email") String email) {
         User user = userService.findByEmail(email);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Find by name user")
     @GetMapping("/findByName/{name}")
     public ResponseEntity<List<User>> findUserByName(@PathVariable(name = "name") String name) {
         List<User> user = userService.findByName(name);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Find user from userId")
+    @GetMapping("/findById/{userId}")
+    public ResponseEntity<User> findUserById(@PathVariable(name = "userId") Long userId) {
+        User user = userService.findUserById(userId);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
 
+    @ApiOperation(value = "Delete user from userId")
     @Transactional
     @DeleteMapping("/deleteById/{userId}")
     public ResponseEntity<String> deleteUserById(@PathVariable Long userId) {
         userService.deleteUserById(userId);
         return new ResponseEntity<>("Delete Successfully!", HttpStatus.OK);
-    }
-
-    @GetMapping("/findById/{userId}")
-    public ResponseEntity<User> findUserById(@PathVariable(name = "userId") Long  userId) {
-        User user = userService.findUserById(userId);
-        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
 }

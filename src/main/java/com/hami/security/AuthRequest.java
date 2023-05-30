@@ -10,6 +10,6 @@ public class AuthRequest {
     @Email
     @Length(min = 5, max = 50)
     private String email;
-    @Length(min = 5, max = 10)
+    @Length(min = 5, max = 50)
     private String password;
 }

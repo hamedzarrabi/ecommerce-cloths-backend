@@ -1,6 +1,6 @@
 package com.hami.config;
 
-import com.hami.Repository.UserRepository;
+import com.hami.Repository.user.UserRepository;
 import com.hami.security.JwtTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -61,7 +61,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         );
 
         http.authorizeRequests()
-                .antMatchers("/user/login").permitAll()
+                .antMatchers("/user/**").permitAll()
                 .antMatchers("/v2/api-docs/**").permitAll()
                 .antMatchers("/swagger-ui/**").permitAll()
                 .antMatchers("/swagger-resources/**").permitAll()

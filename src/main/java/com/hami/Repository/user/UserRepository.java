@@ -1,4 +1,4 @@
-package com.hami.Repository;
+package com.hami.Repository.user;
 
 import com.hami.Entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;

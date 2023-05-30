@@ -1,7 +1,7 @@
 package com.hami.ecommerceclothsbackend;
 
 import com.hami.Entity.user.Role;
-import com.hami.Repository.RoleRepository;
+import com.hami.Repository.user.RoleRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
