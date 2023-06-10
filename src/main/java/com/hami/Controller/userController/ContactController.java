@@ -39,8 +39,8 @@ public class ContactController {
         Contact contact = contactService.getContactByEmail(email);
         return new ResponseEntity<>(contact, HttpStatus.OK);
     }
-    @ApiOperation(value = "Get Contact by email contact REST API")
-    @GetMapping("/deleteContactById")
+    @ApiOperation(value = "Deleted Contact by id REST API")
+    @DeleteMapping("/deleteContactById")
     public ResponseEntity<String> deleteContactById(Long id) {
         contactService.deleteContactById(id);
         return new ResponseEntity<>("Deleted contact by id: " + id + " Successfully", HttpStatus.OK);
