@@ -27,7 +27,7 @@ public class RoleRepositoryTest {
         Role editor = new Role("ROLE_EDITOR");
         Role customer = new Role("ROLE_CUSTOMER");
 
-        roleRepository.saveAll(List.of(admin, editor, customer));
+//        roleRepository.saveAll(List.of(admin, editor, customer));
 
         long numberOfRoles = roleRepository.count();
         assertEquals(3, numberOfRoles);

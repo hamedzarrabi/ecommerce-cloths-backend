@@ -1,5 +1,6 @@
 package com.hami.Entity.blog;
 
+import com.hami.Entity.product.ProductCategory;
 import com.hami.Entity.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,17 +25,22 @@ public class Blog {
     private String title;
     private String image;
 
-    @Column(name = "create_blog", nullable = false, updatable = false)
+    @Column(name = "create_date_blog", nullable = false, updatable = false)
     @CreationTimestamp
-    private Date createBlog;
+    private Date createDateBlog;
 
-    @Column(name = "update_blog")
+    @Column(name = "update_date_blog")
     @UpdateTimestamp
-    private Date updateBlog;
+    private Date updateDateBlog;
 
     private String text;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+
+    @ManyToOne
+    @JoinColumn(name = "product_category_id")
+    private ProductCategory productCategory;
 }
