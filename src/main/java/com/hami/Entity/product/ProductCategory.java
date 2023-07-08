@@ -21,7 +21,7 @@ public class ProductCategory {
     private String title;
     private String description;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
     private Date createdAt;
 
@@ -29,6 +29,5 @@ public class ProductCategory {
     @UpdateTimestamp
     private Date modifiedAt;
 
-    @Column(name = "deleted_at")
-    private Date deletedAt;
+
 }

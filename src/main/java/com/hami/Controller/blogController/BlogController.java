@@ -1,5 +1,6 @@
 package com.hami.Controller.blogController;
 
+import com.hami.Controller.productController.ProductController;
 import com.hami.DTO.blogDto.BlogDto;
 import com.hami.Entity.blog.Blog;
 import com.hami.Entity.user.User;
@@ -20,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Api(value = "CRUD Rest APIs for Blog resource")
@@ -46,19 +48,15 @@ public class BlogController {
         String imageAddress = "images/blog/" + user.getEmail();
         String originalAddressImage = "D:/Backend/E-commenrce-cloths-full-website/ecommerce-cloths-frontend/public/images/blog/" + user.getEmail();
 
-        if (user != null) {
-            blog.setTitle(title);
-            blog.setImage(imageAddress + "/" + image.getOriginalFilename());
-            blog.setText(text);
-            blog.setUser(user);
+        blog.setTitle(title);
+        blog.setImage(imageAddress + "/" + image.getOriginalFilename());
+        blog.setText(text);
+        blog.setUser(user);
 
-            savePicture(image, originalAddressImage);
+        savePicture(image, originalAddressImage);
 
-            BlogDto newBlog = blogService.createBlog(blog);
-            return new ResponseEntity<>(newBlog, HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>("UserId not found", HttpStatus.NOT_FOUND);
-        }
+        BlogDto newBlog = blogService.createBlog(blog);
+        return new ResponseEntity<>(newBlog, HttpStatus.CREATED);
 
     }
 
@@ -72,7 +70,7 @@ public class BlogController {
     ) {
         Optional<Blog> blogDto = blogService.findBlogById(blogId);
 
-        System.out.println("id:    " + blogDto.get().getId());
+        System.out.println("blog id:    " + blogDto.get().getId());
 
         BlogDto blog = new BlogDto();
         User user = userService.findUserById(userId);
@@ -80,7 +78,7 @@ public class BlogController {
         String imageAddress = "images/blog/" + user.getEmail();
         String originalAddressImage = "D:/Backend/E-commenrce-cloths-full-website/ecommerce-cloths-frontend/public/images/blog/" + user.getEmail();
 
-        if (user != null && blogDto.get().getId() != null) {
+        if (blogDto.get().getId() != null) {
             blog.setTitle(title);
             blog.setImage(imageAddress + "/" + image.getOriginalFilename());
             blog.setText(text);
@@ -115,15 +113,7 @@ public class BlogController {
         return new ResponseEntity<>("Deleted blog id:" + id + " Successfully.", HttpStatus.OK);
     }
 
-    private String savePicture(MultipartFile image, String address) {
-        String fileName = StringUtils.cleanPath(image.getOriginalFilename());
-        try {
-            Path path = Paths.get(address);
-            Files.createDirectories(path);
-            Files.copy(image.getInputStream(), path.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
-            return "Success image save.";
-        } catch (IOException e) {
-            throw new RuntimeException("Could not store file " + fileName + ". Please try again!", e);
-        }
+    private void savePicture(MultipartFile image, String address) {
+        ProductController.saveImage(image, address);
     }
 }

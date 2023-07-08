@@ -35,7 +35,7 @@ public class Product {
     @JoinColumn(name = "discount_id")
     private ProductDiscount discountId;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
     private Date createdAt;
 
